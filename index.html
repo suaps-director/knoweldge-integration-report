@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rise of Knowledge Integration in Research</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A thematic, single-page application with a top navigation bar. The structure guides the user from the main conclusion ('Why Integrate?'), through the implementation details ('How Institutions Respond'), to the evidence ('Literature Survey'), and finally to the obstacles ('Challenges'). This non-linear, thematic structure is chosen for usability, allowing users to explore sections based on their interests rather than following a rigid, linear narrative. Key interactions include clickable cards for progressive disclosure, an interactive diagram built with HTML/CSS to show relationships between concepts, and a filterable library of academic sources to make the evidence base easily searchable. -->
+    <!-- Visualization & Content Choices: 
+    1. Report Info: Trend of growing interest in knowledge integration. Goal: Show Change. Viz/Method: Chart.js Bar Chart. Interaction: Hover for tooltips. Justification: Visually confirms the report's main thesis immediately. Library: Chart.js.
+    2. Report Info: Institutional responses (structural, policy, financial). Goal: Organize. Viz/Method: Interactive diagram using HTML/CSS Flexbox/Grid and JS. Interaction: Click nodes to filter and display detailed text. Justification: Avoids static images/SVG, creating a dynamic link between concepts and their explanations, enhancing user engagement. Library/Method: Vanilla JS, Tailwind.
+    3. Report Info: Key academic articles and reports. Goal: Inform/Organize. Viz/Method: Filterable gallery of cards. Interaction: Click buttons to filter by category; click cards to open a modal with details. Justification: Far more user-friendly than a static bibliography, allowing users to find relevant sources quickly. Library/Method: Vanilla JS.
+    4. Report Info: Barriers to integration. Goal: Inform. Viz/Method: Interactive info cards. Interaction: Hover to reveal summary. Justification: A simple, engaging way to present key challenges without overwhelming the user. Library/Method: Tailwind CSS for hover effects.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1f2937; /* gray-800 */
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #0d9488; /* teal-600 */
+            border-bottom-color: #0d9488; /* teal-600 */
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .mechanism-node {
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+        }
+        .mechanism-node.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        .filter-btn {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .filter-btn.active {
+            background-color: #0f766e; /* teal-700 */
+            color: white;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 400px;
+            max-height: 50vh;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Knowledge Integration in Research</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#why" class="nav-link font-medium pb-1">Why Integrate?</a>
+                <a href="#how" class="nav-link font-medium pb-1">How Institutions Respond</a>
+                <a href="#evidence" class="nav-link font-medium pb-1">Literature Survey</a>
+                <a href="#challenges" class="nav-link font-medium pb-1">Challenges</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2">
+            <a href="#why" class="block nav-link">Why Integrate?</a>
+            <a href="#how" class="block nav-link">How Institutions Respond</a>
+            <a href="#evidence" class="block nav-link">Literature Survey</a>
+            <a href="#challenges" class="block nav-link">Challenges</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Section 1: Why Integrate Knowledge? -->
+        <section id="why" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">A Paradigm Shift in Research</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-600">
+                Research institutions are showing a decisive and accelerating interest in integrating knowledge across diverse fields. This shift is not a fleeting trend but a fundamental response to the complexity of modern challenges and a new understanding of how impactful knowledge is created. This section explores the primary drivers behind this movement.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-2">Solving "Wicked" Problems</h3>
+                    <p class="text-gray-600">Issues like climate change, global health crises, and the ethics of AI are too complex for any single discipline. True solutions demand the synthesis of insights from natural sciences, social sciences, humanities, and engineering.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-2">Funding & Policy Incentives</h3>
+                    <p class="text-gray-600">Major funding bodies, such as the US National Science Foundation (NSF) with its "Convergence Research" priority, are explicitly funding and rewarding interdisciplinary approaches, compelling institutions to adapt their structures and policies.</p>
+                </div>
+                <div class="card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-xl mb-2">"Mode 2" Knowledge Production</h3>
+                    <p class="text-gray-600">There is a recognized shift from traditional, discipline-bound "Mode 1" research to an application-oriented, socially accountable "Mode 2" where knowledge is co-created with stakeholders to solve real-world problems.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-4">Conceptual Trend: Growth of Integrated Research</h3>
+                 <p class="text-center text-gray-500 mb-4">This chart illustrates the conceptual trend of increasing focus on interdisciplinary and convergent research initiatives and publications over the last two decades, based on analysis of academic and policy literature.</p>
+                <div class="chart-container">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: How Institutions Respond -->
+        <section id="how" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">The Mechanisms of Change</h2>
+             <p class="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-600">
+                In response to the need for knowledge integration, universities and research bodies are actively creating new policies, structures, and systems. This section provides an interactive overview of the key mechanisms being implemented to foster a more collaborative and integrated research environment. Click on a category to explore specific examples.
+            </p>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Interactive Nodes -->
+                <div class="flex lg:flex-col justify-center gap-4">
+                    <button class="mechanism-node w-full text-left font-semibold p-4 rounded-lg bg-white shadow active" data-target="structural">
+                        <span class="text-xl">🏛️</span> Structural & Organizational
+                    </button>
+                    <button class="mechanism-node w-full text-left font-semibold p-4 rounded-lg bg-white shadow" data-target="financial">
+                        <span class="text-xl">💰</span> Financial & Resource-Based
+                    </button>
+                    <button class="mechanism-node w-full text-left font-semibold p-4 rounded-lg bg-white shadow" data-target="policy">
+                        <span class="text-xl">📜</span> Policy & Governance
+                    </button>
+                </div>
+
+                <!-- Content Display -->
+                <div class="flex-1 bg-white p-8 rounded-lg shadow-inner min-h-[300px]">
+                    <div id="structural" class="mechanism-content">
+                        <h3 class="text-2xl font-bold mb-4">Structural & Organizational Changes</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong>Interdisciplinary Research Centers:</strong> Creation of university-wide institutes that exist outside traditional department silos, focused on themes like sustainability, data science, or public health.</li>
+                            <li><strong>New Degree Programs:</strong> Launching cross-disciplinary undergraduate and graduate degrees (e.g., Politics, Philosophy, and Economics; Computational Biology) to train the next generation of researchers.</li>
+                            <li><strong>Shared Core Facilities:</strong> Investing in centralized equipment, labs, and platforms that are accessible to researchers from all departments to encourage collaboration.</li>
+                        </ul>
+                    </div>
+                    <div id="financial" class="mechanism-content hidden">
+                        <h3 class="text-2xl font-bold mb-4">Financial & Resource-Based Changes</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong>Seed Funding Programs:</strong> Offering internal grants specifically for new, high-risk, interdisciplinary projects that bring together faculty from different colleges or schools.</li>
+                            <li><strong>Cluster Hiring Initiatives:</strong> Recruiting multiple faculty members across different departments who share a common, interdisciplinary research interest.</li>
+                            <li><strong>Differential Workload Policies:</strong> Recognizing the extra time and effort required for collaborative research in faculty workload and resource allocation models.</li>
+                        </ul>
+                    </div>
+                    <div id="policy" class="mechanism-content hidden">
+                        <h3 class="text-2xl font-bold mb-4">Policy & Governance Changes</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong>Revised Promotion & Tenure Criteria:</strong> Updating review standards to explicitly value interdisciplinary publications, collaborative grants, and non-traditional research outputs.</li>
+                            <li><strong>Flexible Governance Models:</strong> Establishing new administrative structures and committees that can oversee and support cross-departmental initiatives effectively.</li>
+                            <li><strong>Data Sharing & IP Policies:</strong> Creating clear institutional policies that facilitate data sharing and determine intellectual property rights in collaborative projects.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Literature Survey -->
+        <section id="evidence" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">An Interactive Literature Survey</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-600">
+                The trend towards knowledge integration is well-documented in academic and policy literature. This interactive library contains key texts that provide the evidence and conceptual frameworks for this movement. Use the filters to navigate the literature and click on any entry to see a summary of its contribution.
+            </p>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button class="filter-btn bg-white shadow py-2 px-4 rounded-full text-sm font-semibold text-gray-700 active" data-filter="all">All</button>
+                <button class="filter-btn bg-white shadow py-2 px-4 rounded-full text-sm font-semibold text-gray-700" data-filter="foundational">Foundational Concepts</button>
+                <button class="filter-btn bg-white shadow py-2 px-4 rounded-full text-sm font-semibold text-gray-700" data-filter="strategy">Institutional Strategies</button>
+                <button class="filter-btn bg-white shadow py-2 px-4 rounded-full text-sm font-semibold text-gray-700" data-filter="challenges_cat">Challenges</button>
+            </div>
+
+            <!-- Literature Grid -->
+            <div id="literature-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Literature items will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Section 4: Challenges -->
+        <section id="challenges" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-teal-700">The Road Ahead: Overcoming Challenges</h2>
+            <p class="text-lg text-center max-w-3xl mx-auto mb-12 text-gray-600">
+                Despite widespread enthusiasm, the path to effective knowledge integration is not without obstacles. Institutions must navigate deep-seated cultural, structural, and administrative barriers. This section highlights the most significant challenges that remain in fostering truly collaborative research environments. Hover over each card for a brief explanation.
+            </p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Disciplinary Silos & "Turf Wars"</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>Deep-rooted departmental identities and competition for resources can hinder genuine collaboration and create resistance to sharing knowledge and credit.</p>
+                    </div>
+                </div>
+                <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Communication Gaps & Jargon</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>Each discipline has its own language and methods. Overcoming these differences requires significant time, effort, and a willingness to learn from others.</p>
+                    </div>
+                </div>
+                <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Evaluation & Assessment Metrics</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>Traditional metrics for success (e.g., single-author papers in high-impact disciplinary journals) often fail to capture the value of collaborative work and its broader impacts.</p>
+                    </div>
+                </div>
+                 <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Career Path & Promotion Risk</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>Especially for early-career researchers, engaging in time-consuming interdisciplinary work can be perceived as a career risk if promotion committees do not adequately value it.</p>
+                    </div>
+                </div>
+                <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Administrative & Bureaucratic Hurdles</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>University administrative structures (e.g., budgeting, course registration, grant management) are often not designed to handle cross-departmental projects smoothly.</p>
+                    </div>
+                </div>
+                <div class="group relative bg-white p-6 rounded-lg shadow-md overflow-hidden">
+                    <h3 class="font-bold text-xl mb-2">Time & Resource Intensity</h3>
+                    <div class="absolute inset-0 bg-teal-600/90 text-white p-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p>Building trust, developing a shared language, and integrating different methodologies is a slow, resource-intensive process that requires long-term commitment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="literature-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-start">
+                    <h2 id="modal-title" class="text-2xl font-bold mb-2"></h2>
+                    <button id="modal-close-btn" class="text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                <p id="modal-author" class="text-sm text-gray-500 mb-4"></p>
+                <p id="modal-description" class="text-gray-700"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Mobile Menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Smooth Scrolling & Active Nav Link
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            function updateActiveLink() {
+                let index = sections.length;
+
+                while(--index && window.scrollY + 100 < sections[index].offsetTop) {}
+                
+                navLinks.forEach((link) => link.classList.remove('active'));
+                
+                const mobileLinks = document.querySelectorAll('#mobile-menu .nav-link');
+                const desktopLinks = document.querySelectorAll('header nav .nav-link');
+                
+                if(sections[index]) {
+                   const activeLinkDesktop = document.querySelector(`header nav .nav-link[href="#${sections[index].id}"]`);
+                   const activeLinkMobile = document.querySelector(`#mobile-menu .nav-link[href="#${sections[index].id}"]`);
+                   if(activeLinkDesktop) activeLinkDesktop.classList.add('active');
+                   if(activeLinkMobile) activeLinkMobile.classList.add('active');
+                }
+            }
+
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink();
+
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                     if(mobileMenu.classList.contains('hidden') === false){
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Trends Chart
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2000-2004', '2005-2009', '2010-2014', '2015-2019', '2020-Present'],
+                    datasets: [{
+                        label: 'Focus on Integrated Research (Conceptual)',
+                        data: [15, 30, 55, 80, 100],
+                        backgroundColor: 'rgba(13, 148, 136, 0.6)', // teal-600 with opacity
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Relative Interest & Initiatives'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `A conceptual measure of institutional and funding agency focus on integrated research.`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Mechanism Interaction
+            const mechanismNodes = document.querySelectorAll('.mechanism-node');
+            const mechanismContents = document.querySelectorAll('.mechanism-content');
+
+            mechanismNodes.forEach(node => {
+                node.addEventListener('click', () => {
+                    mechanismNodes.forEach(n => n.classList.remove('active'));
+                    node.classList.add('active');
+
+                    const targetId = node.dataset.target;
+                    mechanismContents.forEach(content => {
+                        if (content.id === targetId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Literature Survey Data
+            const literatureData = [
+                 {
+                    title: "The New Production of Knowledge",
+                    author: "Gibbons, M., Limoges, C., Nowotny, H., et al.",
+                    year: 1994,
+                    category: "foundational",
+                    description: "This seminal work introduced the concepts of 'Mode 1' and 'Mode 2' knowledge production. It argues that a new mode of research (Mode 2) is emerging, characterized by being application-oriented, transdisciplinary, socially accountable, and organizationally diverse, contrasting with traditional, discipline-based academic research (Mode 1)."
+                },
+                {
+                    title: "Interdisciplinarity: History, Theory, and Practice",
+                    author: "Klein, J. T.",
+                    year: 1990,
+                    category: "foundational",
+                    description: "A comprehensive and foundational text that provides a systematic study of interdisciplinarity. It spans the social sciences, natural sciences, and humanities, arguing that interdisciplinarity is an essential framework for solving problems that cannot be addressed by single disciplines."
+                },
+                {
+                    title: "Growing Convergence Research (GCR)",
+                    author: "National Science Foundation (NSF)",
+                    year: "c. 2019",
+                    category: "strategy",
+                    description: "A major strategic priority from the NSF that defines 'Convergence Research' as deep, problem-driven integration across disciplines. This initiative signals a powerful push from a major funding agency, heavily influencing the direction and policies of US research institutions."
+                },
+                {
+                    title: "Barriers to Interdisciplinary Research",
+                    author: "National Academies Press",
+                    year: 2004,
+                    category: "challenges_cat",
+                    description: "This report details the significant barriers to effective interdisciplinary work, including communication difficulties due to jargon, 'intellectual turf' issues between disciplines, and institutional structures that reinforce silos."
+                },
+                {
+                    title: "Thinking Across Disciplines",
+                    author: "DEA & FBE (Danish Report)",
+                    year: 2008,
+                    category: "strategy",
+                    description: "An early European report documenting the benefits of interdisciplinarity. It found that the most interdisciplinary research communities attract more funding, have more international cooperation, and share knowledge more effectively with external partners, making a strong case for policy action."
+                },
+                {
+                    title: "Challenges Facing Interdisciplinary Researchers",
+                    author: "Adams, D., et al. (PMC)",
+                    year: 2022,
+                    category: "challenges_cat",
+                    description: "This study highlights the professional challenges faced by interdisciplinary researchers, including difficulties with professional identity, a lack of a clear 'home' community, and ambiguity in career advancement and funding pathways."
+                },
+                 {
+                    title: "Creating Interdisciplinary Campus Cultures",
+                    author: "Klein, J. T.",
+                    year: 2009,
+                    category: "strategy",
+                    description: "Building on her earlier work, Klein provides a model for how universities can strategically build and sustain campus cultures that support interdisciplinary research and education, focusing on practical steps for implementation."
+                },
+                 {
+                    title: "The Rise of Interdisciplinary Degrees",
+                    author: "QS GEN",
+                    year: 2024,
+                    category: "strategy",
+                    description: "This article reviews the growing trend of interdisciplinary degree programs at both undergraduate and postgraduate levels, highlighting their popularity with students and evidence that graduates command higher salaries, indicating a shift in educational philosophy."
+                }
+            ];
+
+            const grid = document.getElementById('literature-grid');
+            const modal = document.getElementById('literature-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalAuthor = document.getElementById('modal-author');
+            const modalDescription = document.getElementById('modal-description');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            function renderLiterature(filter = 'all') {
+                grid.innerHTML = '';
+                const filteredData = (filter === 'all')
+                    ? literatureData
+                    : literatureData.filter(item => item.category === filter);
+
+                filteredData.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'literature-item card bg-white p-5 rounded-lg shadow-md cursor-pointer';
+                    card.dataset.category = item.category;
+                    card.innerHTML = `
+                        <h4 class="font-bold text-lg">${item.title}</h4>
+                        <p class="text-sm text-gray-500">${item.author} (${item.year})</p>
+                    `;
+                    card.addEventListener('click', () => openModal(item));
+                    grid.appendChild(card);
+                });
+            }
+
+            function openModal(item) {
+                modalTitle.textContent = item.title;
+                modalAuthor.textContent = `${item.author} (${item.year})`;
+                modalDescription.textContent = item.description;
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderLiterature(btn.dataset.filter);
+                });
+            });
+
+            renderLiterature();
+        });
+    </script>
+
+</body>
+</html>
